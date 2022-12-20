@@ -1,6 +1,8 @@
 package com.jsplugin.demo.plugin;
 
 import com.google.common.eventbus.Subscribe;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
@@ -26,5 +28,10 @@ public class PluginEvtListener  implements ApplicationContextAware{
     {
 
         PluginContext.setAttribute("hello", "polo", ScriptContext.GLOBAL_SCOPE);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+
     }
 }
