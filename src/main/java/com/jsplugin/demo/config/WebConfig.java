@@ -5,8 +5,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.annotation.Resource;
+
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+    @Resource
+    private PluginInterceptor interceptor;
     /**
      * 添加Web项目的拦截器
      * 在指定拦截器拦截规则时，调用了两个方法，这两个方法的说明如下：
@@ -16,7 +20,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // 对所有访问路径，都通过MyInterceptor类型的拦截器进行拦截
-        registry.addInterceptor(new PluginInterceptor()).addPathPatterns("/**")
+        registry.addInterceptor(interceptor).addPathPatterns("/**")
                 .excludePathPatterns("/", "/login", "/index.html", "/user/login", "/css/**", "/images/**", "/js/**", "/fonts/**");
         //放行登录页，登陆操作，静态资源
     }

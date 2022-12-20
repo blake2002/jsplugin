@@ -3,17 +3,20 @@ package com.jsplugin.demo.interceptors;
 import com.jsplugin.demo.plugin.PluginEvent;
 import com.jsplugin.demo.plugin.PluginEvtListener;
 import com.google.common.eventbus.AsyncEventBus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.concurrent.Executors;
-
+@Component
 public class PluginInterceptor implements HandlerInterceptor {
     private final AsyncEventBus dispatcher = new AsyncEventBus(Executors.newFixedThreadPool(4));
-    private final PluginEvtListener listener = new PluginEvtListener();
+    @Resource
+    private PluginEvtListener listener ;
 
     public PluginInterceptor()
     {
