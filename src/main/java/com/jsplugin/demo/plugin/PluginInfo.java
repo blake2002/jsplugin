@@ -1,6 +1,9 @@
 package com.jsplugin.demo.plugin;
 
-public class PluginInfo {
+import java.util.HashMap;
+import java.util.Map;
+
+public class PluginInfo implements IPlugin{
     private String code;
     private String groupName;
     private String pluginName;
@@ -8,13 +11,19 @@ public class PluginInfo {
     private String point;
     private int enabled ;
 
-    public PluginInfo(String code, String groupName, String pluginName, int callType, String point, int enabled) {
+    private String pluginContent;
+
+    private Map<String,String> paramsMap ;
+
+    public PluginInfo(String content,String code, String groupName, String pluginName, int callType, String point, int enabled) {
+        this.pluginContent= content;
         this.code = code;
         this.groupName = groupName;
         this.pluginName = pluginName;
         this.callType = callType;
         this.point = point;
         this.enabled = enabled;
+        this.paramsMap = new HashMap<>();
     }
 
     public String getCode() {
@@ -65,6 +74,22 @@ public class PluginInfo {
         this.enabled = enabled;
     }
 
+    public Map<String, String> getParamsMap() {
+        return paramsMap;
+    }
+
+    public void setParamsMap(Map<String, String> paramsMap) {
+        this.paramsMap = paramsMap;
+    }
+
+    public String getPluginContent() {
+        return pluginContent;
+    }
+
+    public void setPluginContent(String pluginContent) {
+        this.pluginContent = pluginContent;
+    }
+
     @Override
     public String toString() {
         return "PluginInfo{" +
@@ -74,6 +99,8 @@ public class PluginInfo {
                 ", callType=" + callType +
                 ", point='" + point + '\'' +
                 ", enabled=" + enabled +
+                ", pluginContent='" + pluginContent + '\'' +
+                ", paramsMap=" + paramsMap +
                 '}';
     }
 }

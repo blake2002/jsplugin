@@ -1,12 +1,15 @@
 package com.jsplugin.demo.interceptors;
 
-import com.jsplugin.demo.plugin.PluginEvent;
-import com.jsplugin.demo.plugin.PluginEvtListener;
 import com.google.common.eventbus.AsyncEventBus;
+import com.jsplugin.demo.Consts;
+import com.jsplugin.demo.plugin.PluginEvtListener;
+import com.jsplugin.demo.plugin.evt.PluginAfterApiEvent;
+import com.jsplugin.demo.plugin.evt.PluginBeforeApiEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,7 +21,8 @@ public class PluginInterceptor implements HandlerInterceptor {
     @Resource
     private PluginEvtListener listener ;
 
-    public PluginInterceptor()
+    @PostConstruct
+    public void init()
     {
         dispatcher.register(listener);
     }
@@ -28,7 +32,7 @@ public class PluginInterceptor implements HandlerInterceptor {
         try {
             System.out.println(new Date() + "--preHandle:" + request.getRequestURL());
             String matchUri = request.getRequestURI();
-            dispatcher.post(new PluginEvent(matchUri,"api前切"));
+            dispatcher.post(new PluginBeforeApiEvent(matchUri, Consts.CallType.Before_Api,"api前切"));
         }
         catch (Exception e)
         {
@@ -43,7 +47,7 @@ public class PluginInterceptor implements HandlerInterceptor {
        try {
            System.out.println(new Date() + "--postHandle:" + request.getRequestURL());
            String matchUri = request.getRequestURI();
-           dispatcher.post(new PluginEvent(matchUri,"api后切"));
+           dispatcher.post(new PluginAfterApiEvent(matchUri,Consts.CallType.After_Api,"api后切"));
        }
        catch (Exception e)
        {
