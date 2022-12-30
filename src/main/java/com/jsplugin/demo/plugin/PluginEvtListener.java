@@ -1,5 +1,6 @@
 package com.jsplugin.demo.plugin;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.Subscribe;
 import com.jsplugin.demo.Consts;
@@ -7,12 +8,14 @@ import com.jsplugin.demo.config.WebConfig;
 import com.jsplugin.demo.plugin.evt.PluginAfterApiEvent;
 import com.jsplugin.demo.plugin.evt.PluginBeforeApiEvent;
 import com.jsplugin.demo.plugin.evt.PluginEvent;
+import com.jsplugin.demo.plugin.evt.p1;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.script.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,6 +27,8 @@ public class PluginEvtListener  implements ApplicationContextAware{
 
     private Map<String,String> pluginJsonMap = new HashMap<>();
     private Map<String,IPlugin> pluginMap = new HashMap<>();
+    @Resource
+    private p1 ppp;
 
     @Subscribe
     public void OnAfterApiListener(PluginAfterApiEvent evt)
@@ -55,8 +60,9 @@ public class PluginEvtListener  implements ApplicationContextAware{
                     jsEngine.getContext().setAttribute(paramName, paramVal, ScriptContext.ENGINE_SCOPE);
                 }
             }
+
             // 注入 spring boot 对象
-            //todo: daizuo
+            getIPluginBean(jsEngine);
 
             // 编译 执行
             if (jsEngine instanceof Compilable){
@@ -104,8 +110,10 @@ public class PluginEvtListener  implements ApplicationContextAware{
                     jsEngine.getContext().setAttribute(paramName, paramVal, ScriptContext.ENGINE_SCOPE);
                 }
             }
+
             // 注入 spring boot 对象
-            //todo: daizuo
+            //
+            getIPluginBean(jsEngine);
 
             // 编译 执行
             if (jsEngine instanceof Compilable){
@@ -135,13 +143,16 @@ public class PluginEvtListener  implements ApplicationContextAware{
         this.applicationContext = applicationContext;
     }
 
-    private void getIPluginBean()
+    private void getIPluginBean(ScriptEngine jsEngine)
     {
-//        if(this.pluginMap.size() == 0)
-//        {
-//            this.pluginMap = applicationContext.getBeansOfType(IPlugin.class);
-//            for
-//        }
+        if(this.pluginMap.size() == 0)
+        {
+            this.pluginMap = applicationContext.getBeansOfType(IPlugin.class);
+            if(this.pluginMap!=null && this.pluginMap.size() > 0)
+            {
+                this.pluginMap.forEach((s, iPlugin) -> jsEngine.getContext().setAttribute(s,JSONObject.toJSONString(iPlugin),ScriptContext.ENGINE_SCOPE));
+            }
+        }
     }
 
     private List<PluginInfo> getPluginInfos()
